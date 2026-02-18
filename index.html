@@ -424,6 +424,7 @@
             font-size: 20px;
         }
         
+        /* ===== TABLE STYLES - ปรับขนาดคอลัมน์ใหม่ ===== */
         .table-container {
             overflow-x: auto;
             background: white;
@@ -435,6 +436,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            table-layout: fixed; /* ✅ บังคับให้ใช้ความกว้างที่กำหนด */
         }
         
         thead {
@@ -443,12 +445,24 @@
         }
         
         thead th {
-            padding: 18px 15px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 15px;
+            padding: 14px 10px;
             text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            word-break: keep-all;
+            white-space: nowrap;
+            overflow: hidden;
         }
+
+        /* กำหนดความกว้างคอลัมน์ให้ fit */
+        .col-school   { width: 22%; }
+        .col-total    { width: 7%; }
+        .col-join     { width: 7%; }
+        .col-teacher  { width: 28%; }
+        .col-phone    { width: 6%; }
+        .col-singing  { width: 10%; }
+        .col-takraw   { width: 10%; }
+        .col-action   { width: 10%; }
         
         tbody tr {
             border-bottom: 1px solid #f0f0f0;
@@ -457,12 +471,14 @@
         
         tbody tr:hover {
             background: linear-gradient(to right, rgba(255, 107, 0, 0.05), rgba(255, 107, 0, 0.02));
-            transform: scale(1.01);
         }
         
         tbody td {
-            padding: 15px;
-            font-size: 15px;
+            padding: 12px 8px;
+            font-size: 14px;
+            vertical-align: middle;
+            word-break: break-word;   /* ✅ ตัดคำได้ ไม่ล้นออกนอกตาราง */
+            overflow-wrap: break-word;
         }
         
         tbody tr:last-child {
@@ -471,13 +487,15 @@
         
         .action-buttons {
             display: flex;
-            gap: 10px;
+            gap: 6px;
+            flex-wrap: wrap;
         }
         
         .btn-small {
-            padding: 6px 15px;
-            font-size: 14px;
+            padding: 5px 10px;
+            font-size: 12px;
             border-radius: 6px;
+            white-space: nowrap;
         }
         
         .btn-edit {
@@ -502,6 +520,28 @@
             background: linear-gradient(135deg, #d32f2f 0%, #ef5350 100%);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+        }
+
+        /* ✅ ปุ่มคลิกดูข้อมูลผู้ประกวด */
+        .contest-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            transition: transform 0.2s;
+            border: none;
+            background: none;
+            padding: 2px;
+        }
+        .contest-badge:hover {
+            transform: scale(1.3);
+        }
+        .contest-badge-tooltip {
+            font-size: 11px;
+            color: #4CAF50;
+            display: block;
+            margin-top: 2px;
         }
         
         .modal {
@@ -560,6 +600,28 @@
             color: #ff6b00;
             margin-bottom: 20px;
         }
+
+        /* ===== CONTESTANT INFO MODAL ===== */
+        .contestant-card {
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe8dc 100%);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #ff6b00;
+        }
+        .contestant-card .info-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .contestant-card .info-label {
+            font-weight: 600;
+            color: #ff6b00;
+            min-width: 90px;
+        }
+        .contestant-card .info-value {
+            color: #333;
+        }
         
         #printArea {
             display: none;
@@ -614,7 +676,7 @@
             border-left: 4px solid #dc3545;
         }
         
-        /* Print Styles - Simple & Working */
+        /* ===== PRINT STYLES ===== */
         @media print {
             @page {
                 size: A4;
@@ -645,6 +707,8 @@
             #printArea table {
                 display: table !important;
                 background: white !important;
+                border-collapse: collapse !important;
+                width: 100% !important;
             }
             
             #printArea thead {
@@ -658,6 +722,7 @@
             #printArea tr {
                 display: table-row !important;
                 background: white !important;
+                page-break-inside: avoid !important;
             }
             
             #printArea th,
@@ -665,18 +730,17 @@
                 display: table-cell !important;
                 background: white !important;
                 color: black !important;
+                border: 1.5pt solid black !important;
+                padding: 5px 6px !important;
             }
             
             #printArea th {
-                border: 2px solid black !important;
                 font-weight: bold !important;
+                border: 1.5pt solid black !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
             
-            #printArea td {
-                border: 1px solid black !important;
-            }
-            
-            /* Keep logo colors */
             #printArea img {
                 display: inline-block !important;
                 background: transparent !important;
@@ -717,47 +781,56 @@
             font-size: 14px;
             margin: 5px 0;
         }
-        
+
+        /* ✅ ตารางพิมพ์ - แก้เส้นตารางขาดหาย */
         .print-table {
             width: 100%;
             border-collapse: collapse;
             margin: 15px 0;
             font-size: 13px;
+            border: 2px solid #000; /* เส้นขอบนอก */
         }
         
         .print-table th,
         .print-table td {
-            border: 1px solid #000;
+            border: 1px solid #000; /* ✅ เส้นทุก cell */
             padding: 5px 6px;
             text-align: left;
         }
         
         .print-table th {
-            background: #808080;
-            color: white;
+            background: #808080 !important;
+            color: white !important;
             font-weight: 600;
             text-align: center;
             font-size: 13px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
         
         .print-table td {
             font-size: 12px;
         }
-        
+
+        /* ✅ สำหรับพิมพ์ - เส้นตารางต้องชัดเจน */
         @media print {
+            .print-table {
+                border-collapse: collapse !important;
+                border: 2pt solid black !important;
+            }
             .print-table th {
                 background: white !important;
                 color: black !important;
                 font-weight: bold !important;
-                border: 2px solid black !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                border: 1.5pt solid black !important;
             }
-            
             .print-table td {
                 background: white !important;
                 color: black !important;
-                border: 1px solid black !important;
+                border: 1pt solid black !important;
+            }
+            .print-table tr {
+                page-break-inside: avoid !important;
             }
         }
         
@@ -1132,14 +1205,14 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>โรงเรียน</th>
-                            <th>นร.ป.6</th>
-                            <th>นร.เข้าร่วม</th>
-                            <th>ครูผู้ดูแล</th>
-                            <th style="width: 60px;">โทร</th>
-                            <th style="width: 80px;">ร้องเพลง</th>
-                            <th style="width: 80px;">เดาะตะกร้อ</th>
-                            <th style="width: 150px;">การจัดการ</th>
+                            <th class="col-school">โรงเรียน</th>
+                            <th class="col-total">นร.ป.6</th>
+                            <th class="col-join">นร.เข้าร่วม</th>
+                            <th class="col-teacher">ครูผู้ดูแล</th>
+                            <th class="col-phone">โทร</th>
+                            <th class="col-singing">ร้องเพลง</th>
+                            <th class="col-takraw">เดาะตะกร้อ</th>
+                            <th class="col-action">การจัดการ</th>
                         </tr>
                     </thead>
                     <tbody id="dataTable">
@@ -1264,6 +1337,15 @@
         </div>
     </div>
 
+    <!-- ✅ Contest Info Modal (ใหม่) -->
+    <div id="contestInfoModal" class="modal">
+        <div class="modal-content" style="max-width: 480px;">
+            <span class="close" onclick="closeContestInfoModal()">&times;</span>
+            <h2 id="contestInfoTitle" style="margin-bottom: 20px;">ข้อมูลผู้เข้าประกวด</h2>
+            <div id="contestInfoBody"></div>
+        </div>
+    </div>
+
     <!-- Print Area -->
     <div id="printArea"></div>
     
@@ -1309,20 +1391,16 @@
             if (intention === 'join') {
                 joinCountGroup.classList.remove('hidden');
                 notJoinReasonGroup.classList.add('hidden');
-                // Clear auto-filled "-"
                 document.getElementById('joinCount').value = '';
             } else if (intention === 'notjoin') {
                 joinCountGroup.classList.add('hidden');
                 notJoinReasonGroup.classList.remove('hidden');
-                // Auto-fill "-" for join count
                 document.getElementById('joinCount').value = 0;
                 
-                // Auto-fill "-" for teacher count if empty
                 if (!document.getElementById('teacherCount').value) {
                     document.getElementById('teacherCount').value = 0;
                 }
                 
-                // Uncheck contests
                 document.getElementById('contestSinging').checked = false;
                 document.getElementById('contestTakraw').checked = false;
                 toggleContestField('singing');
@@ -1338,7 +1416,6 @@
             const count = parseInt(document.getElementById('teacherCount').value) || 0;
             const container = document.getElementById('teacherFields');
             
-            // Preserve existing data
             const existingData = [];
             container.querySelectorAll('.dynamic-field-item').forEach((item, index) => {
                 existingData[index] = {
@@ -1349,7 +1426,6 @@
                 };
             });
             
-            // Clear and regenerate
             container.innerHTML = '';
             
             if (count > 0) {
@@ -1479,7 +1555,6 @@
                 }
                 clearForm();
                 switchTab(1);
-                // Scroll to table after switching
                 setTimeout(() => {
                     const tableContainer = document.querySelector('.table-container');
                     if (tableContainer) {
@@ -1517,13 +1592,12 @@
                     document.getElementById('statSchools').textContent = '0';
                     document.getElementById('statStudents').textContent = '0';
                     document.getElementById('statContestants').textContent = '0';
-                    document.getElementById('dataTable').innerHTML = '<tr><td colspan="7" style="text-align: center;">ยังไม่มีข้อมูล</td></tr>';
+                    document.getElementById('dataTable').innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px;">ยังไม่มีข้อมูล</td></tr>';
                     return;
                 }
                 
                 const registrations = Object.entries(data).map(([id, val]) => ({ id, ...val }));
                 
-                // Calculate stats
                 const totalSchools = registrations.length;
                 const totalStudents = registrations.reduce((sum, reg) => sum + (reg.joinCount || 0), 0);
                 const totalTeachers = registrations.reduce((sum, reg) => {
@@ -1546,10 +1620,8 @@
                 document.getElementById('statTotal').textContent = totalAll;
                 document.getElementById('statContestants').textContent = totalContestants;
                 
-                // Update chart
                 updateChart(registrations);
                 
-                // Update table
                 const tableBody = document.getElementById('dataTable');
                 tableBody.innerHTML = registrations.map(reg => {
                     const teacherNames = reg.teachers?.map(t => {
@@ -1557,6 +1629,20 @@
                         return fullName || '-';
                     }).join(', ') || '-';
                     const hasPhone = reg.teachers?.some(t => t.phone);
+
+                    // ✅ สร้าง badge ร้องเพลง
+                    const singingCell = reg.contests?.singing?.joined
+                        ? `<div style="text-align:center;">
+                            <button class="contest-badge" onclick="showContestInfo('${reg.id}','singing')" title="ดูข้อมูลผู้เข้าประกวด">✅</button>
+                           </div>`
+                        : '<div style="text-align:center; color:#ccc;">-</div>';
+
+                    // ✅ สร้าง badge เดาะตะกร้อ
+                    const takrawCell = reg.contests?.takraw?.joined
+                        ? `<div style="text-align:center;">
+                            <button class="contest-badge" onclick="showContestInfo('${reg.id}','takraw')" title="ดูข้อมูลผู้เข้าแข่งขัน">✅</button>
+                           </div>`
+                        : '<div style="text-align:center; color:#ccc;">-</div>';
                     
                     return `
                     <tr>
@@ -1571,8 +1657,8 @@
                                 </span>
                             ` : '-'}
                         </td>
-                        <td style="text-align: center;">${reg.contests?.singing?.joined ? '✅' : '-'}</td>
-                        <td style="text-align: center;">${reg.contests?.takraw?.joined ? '✅' : '-'}</td>
+                        <td>${singingCell}</td>
+                        <td>${takrawCell}</td>
                         <td>
                             <div class="action-buttons">
                                 <button class="btn btn-small btn-edit" onclick="editRecord('${reg.id}')">✏️ แก้ไข</button>
@@ -1585,6 +1671,51 @@
             } catch (error) {
                 console.error('Error loading data:', error);
             }
+        }
+
+        // ✅ แสดง modal ข้อมูลผู้ประกวด
+        async function showContestInfo(id, type) {
+            try {
+                const snapshot = await database.ref('registrations/' + id).once('value');
+                const data = snapshot.val();
+                if (!data || !data.contests?.[type]?.data) return;
+
+                const contestant = data.contests[type].data;
+                const typeName = type === 'singing' ? '🎤 การประกวดร้องเพลงลูกทุ่ง' : '🏅 การแข่งขันเดาะตะกร้อ';
+
+                document.getElementById('contestInfoTitle').textContent = typeName;
+                document.getElementById('contestInfoBody').innerHTML = `
+                    <div class="contestant-card">
+                        <div class="info-row">
+                            <span class="info-label">โรงเรียน</span>
+                            <span class="info-value">${data.schoolName}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">คำนำหน้า</span>
+                            <span class="info-value">${contestant.prefix || '-'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">ชื่อ</span>
+                            <span class="info-value">${contestant.firstName || '-'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">สกุล</span>
+                            <span class="info-value">${contestant.lastName || '-'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">ระดับชั้น</span>
+                            <span class="info-value">${contestant.grade || '-'}</span>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('contestInfoModal').style.display = 'block';
+            } catch (error) {
+                console.error('Error showing contest info:', error);
+            }
+        }
+
+        function closeContestInfoModal() {
+            document.getElementById('contestInfoModal').style.display = 'none';
         }
         
         // Update Chart
@@ -1638,9 +1769,7 @@
                     responsive: true,
                     maintainAspectRatio: true,
                     plugins: {
-                        legend: {
-                            display: false
-                        },
+                        legend: { display: false },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
@@ -1655,9 +1784,7 @@
                     scales: {
                         x: {
                             ticks: {
-                                font: {
-                                    size: 12
-                                },
+                                font: { size: 12 },
                                 color: function(context) {
                                     const label = context.tick.label;
                                     return label.includes('(ไม่เข้าร่วม)') ? '#f44336' : '#333';
@@ -1666,9 +1793,7 @@
                         },
                         y: {
                             beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
+                            ticks: { stepSize: 1 }
                         }
                     }
                 }
@@ -1685,10 +1810,8 @@
                 
                 currentEditId = id;
                 
-                // Fill form
                 document.getElementById('schoolName').value = data.schoolName;
                 
-                // Director info
                 if (data.director) {
                     document.getElementById('directorPrefix').value = data.director.prefix || '';
                     document.getElementById('directorFirstName').value = data.director.firstName || '';
@@ -1697,7 +1820,6 @@
                 
                 document.getElementById('totalStudents').value = data.totalStudents;
                 
-                // Set intention
                 document.querySelector(`input[name="intention"][value="${data.intention}"]`).checked = true;
                 toggleIntentionFields();
                 
@@ -1707,7 +1829,6 @@
                     document.getElementById('notJoinReason').value = data.notJoinReason || '';
                 }
                 
-                // Set teachers
                 document.getElementById('teacherCount').value = data.teachers?.length || 0;
                 generateTeacherFields();
                 data.teachers?.forEach((teacher, i) => {
@@ -1717,7 +1838,6 @@
                     document.getElementById(`teacherPhone${i}`).value = teacher.phone || '';
                 });
                 
-                // Set contests
                 if (data.contests?.singing?.joined) {
                     document.getElementById('contestSinging').checked = true;
                     toggleContestField('singing');
@@ -1792,17 +1912,11 @@
                 const data = snapshot.val();
                 
                 if (!data) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'ยังไม่มีข้อมูล',
-                        confirmButtonColor: '#ff6b00'
-                    });
+                    Swal.fire({ icon: 'warning', title: 'ยังไม่มีข้อมูล', confirmButtonColor: '#ff6b00' });
                     return;
                 }
                 
-                const registrations = Object.values(data).filter(reg => 
-                    reg.contests?.[type]?.joined
-                );
+                const registrations = Object.values(data).filter(reg => reg.contests?.[type]?.joined);
                 
                 if (registrations.length === 0) {
                     Swal.fire({
@@ -1814,7 +1928,6 @@
                     return;
                 }
                 
-                // Get event logo
                 let eventLogoUrl = '';
                 try {
                     const logoSnapshot = await database.ref('admin/eventLogo').once('value');
@@ -1822,8 +1935,44 @@
                 } catch (e) {}
                 
                 const contestName = type === 'singing' ? 'การประกวดร้องเพลงลูกทุ่ง' : 'การแข่งขันเดาะตะกร้อ';
+
+                // สร้าง HTML ตารางพิมพ์ด้วย style inline ทุก cell
+                // td ทั่วไป: ตัดคำได้ แต่ไม่ล้นออก
+                const tdBase = 'border:1px solid #000;padding:5px 4px;overflow:hidden;word-break:break-all;font-size:11px;';
+                const tdCenter = tdBase + 'text-align:center;';
+                const tdNoWrap = 'border:1px solid #000;padding:5px 4px;overflow:hidden;white-space:nowrap;font-size:11px;';
+
+                let rowsHtml = '';
+                registrations.forEach((reg, index) => {
+                    const contestant = reg.contests[type].data;
+                    rowsHtml += `
+                        <tr>
+                            <td style="${tdCenter}">${index + 1}</td>
+                            <td style="${tdNoWrap}">${contestant.prefix || ''}</td>
+                            <td style="${tdNoWrap}">${contestant.firstName || ''}</td>
+                            <td style="${tdNoWrap}">${contestant.lastName || ''}</td>
+                            <td style="${tdBase}font-size:10px;">${reg.schoolName}</td>
+                            <td style="${tdBase}">&nbsp;</td>
+                            <td style="${tdBase}">&nbsp;</td>
+                        </tr>
+                    `;
+                });
+                // แถวว่าง
+                for (let i = 0; i < 15; i++) {
+                    rowsHtml += `
+                        <tr>
+                            <td style="${tdCenter}">${registrations.length + i + 1}</td>
+                            <td style="${tdBase}">&nbsp;</td>
+                            <td style="${tdBase}">&nbsp;</td>
+                            <td style="${tdBase}">&nbsp;</td>
+                            <td style="${tdBase}">&nbsp;</td>
+                            <td style="${tdBase}">&nbsp;</td>
+                            <td style="${tdBase}">&nbsp;</td>
+                        </tr>
+                    `;
+                }
                 
-                let html = `
+                const html = `
                     <div class="print-document">
                         <div class="print-header">
                             <img src="https://nonthaphathr.github.io/uploadimg/logoschool.png" alt="โรงเรียน">
@@ -1831,53 +1980,28 @@
                             <h2>โรงเรียนกระดุมทองวิทยา</h2>
                             <h2>ทะเบียนลงนามผู้เข้า${contestName}</h2>
                         </div>
-                        <table class="print-table">
+                        <table style="width:100%;border-collapse:collapse;border:2px solid #000;font-size:12px;margin:15px 0;table-layout:fixed;">
+                            <colgroup>
+                                <col style="width:6%;">
+                                <col style="width:12%;">
+                                <col style="width:15%;">
+                                <col style="width:15%;">
+                                <col style="width:27%;">
+                                <col style="width:15%;">
+                                <col style="width:10%;">
+                            </colgroup>
                             <thead>
                                 <tr>
-                                    <th style="width: 50px;">ลำดับ</th>
-                                    <th style="width: 100px;">คำนำหน้า</th>
-                                    <th>ชื่อ</th>
-                                    <th>สกุล</th>
-                                    <th>โรงเรียน</th>
-                                    <th style="width: 150px;">ลงนาม</th>
-                                    <th style="width: 100px;">หมายเหตุ</th>
+                                    <th style="border:1px solid #000;padding:5px 4px;text-align:center;font-weight:bold;word-break:keep-all;white-space:nowrap;overflow:hidden;">ลำดับ</th>
+                                    <th style="border:1px solid #000;padding:5px 4px;text-align:center;font-weight:bold;word-break:keep-all;white-space:nowrap;overflow:hidden;">คำนำหน้า</th>
+                                    <th style="border:1px solid #000;padding:5px 4px;text-align:center;font-weight:bold;word-break:keep-all;white-space:nowrap;overflow:hidden;">ชื่อ</th>
+                                    <th style="border:1px solid #000;padding:5px 4px;text-align:center;font-weight:bold;word-break:keep-all;white-space:nowrap;overflow:hidden;">สกุล</th>
+                                    <th style="border:1px solid #000;padding:5px 4px;text-align:center;font-weight:bold;word-break:keep-all;white-space:nowrap;overflow:hidden;">โรงเรียน</th>
+                                    <th style="border:1px solid #000;padding:5px 4px;text-align:center;font-weight:bold;word-break:keep-all;white-space:nowrap;overflow:hidden;">ลงนาม</th>
+                                    <th style="border:1px solid #000;padding:5px 4px;text-align:center;font-weight:bold;word-break:keep-all;white-space:nowrap;overflow:hidden;">หมายเหตุ</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                `;
-                
-                registrations.forEach((reg, index) => {
-                    const contestant = reg.contests[type].data;
-                    html += `
-                        <tr>
-                            <td style="text-align: center;">${index + 1}</td>
-                            <td>${contestant.prefix || ''}</td>
-                            <td>${contestant.firstName || ''}</td>
-                            <td>${contestant.lastName || ''}</td>
-                            <td>${reg.schoolName}</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    `;
-                });
-                
-                // Add empty rows
-                for (let i = 0; i < 15; i++) {
-                    html += `
-                        <tr>
-                            <td style="text-align: center;">${registrations.length + i + 1}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    `;
-                }
-                
-                html += `
-                            </tbody>
+                            <tbody>${rowsHtml}</tbody>
                         </table>
                         <div class="signature-section">
                             <div class="signature-box">
@@ -1918,28 +2042,44 @@
                 const data = snapshot.val();
                 
                 if (!data) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'ยังไม่มีข้อมูล',
-                        confirmButtonColor: '#ff6b00'
-                    });
+                    Swal.fire({ icon: 'warning', title: 'ยังไม่มีข้อมูล', confirmButtonColor: '#ff6b00' });
                     return;
                 }
                 
                 const registrations = Object.values(data);
                 
-                const excelData = registrations.map(reg => ({
-                    'โรงเรียน': reg.schoolName,
-                    'ผู้บริหาร': reg.director ? `${reg.director.prefix || ''} ${reg.director.firstName || ''} ${reg.director.lastName || ''}`.trim() : '',
-                    'นักเรียน ป.6': reg.totalStudents,
-                    'ความประสงค์': reg.intention === 'join' ? 'เข้าร่วม' : 'ไม่เข้าร่วม',
-                    'นักเรียนเข้าร่วม': reg.joinCount || 0,
-                    'เหตุผลไม่เข้าร่วม': reg.notJoinReason || '',
-                    'ครูผู้ดูแล': reg.teachers?.map(t => `${t.prefix || ''} ${t.firstName || ''} ${t.lastName || ''}`.trim()).join(', ') || '',
-                    'เบอร์โทร': reg.teachers?.map(t => t.phone).join(', ') || '',
-                    'ร้องเพลง': reg.contests?.singing?.joined ? 'ใช่' : 'ไม่',
-                    'เดาะตะกร้อ': reg.contests?.takraw?.joined ? 'ใช่' : 'ไม่'
-                }));
+                const excelData = registrations.map(reg => {
+                    // ข้อมูลผู้ประกวดร้องเพลง
+                    const singing = reg.contests?.singing;
+                    const singingName = singing?.joined && singing?.data
+                        ? `${singing.data.prefix || ''} ${singing.data.firstName || ''} ${singing.data.lastName || ''}`.trim()
+                        : '';
+                    const singingGrade = singing?.joined && singing?.data ? (singing.data.grade || '') : '';
+
+                    // ข้อมูลผู้แข่งเดาะตะกร้อ
+                    const takraw = reg.contests?.takraw;
+                    const takrawName = takraw?.joined && takraw?.data
+                        ? `${takraw.data.prefix || ''} ${takraw.data.firstName || ''} ${takraw.data.lastName || ''}`.trim()
+                        : '';
+                    const takrawGrade = takraw?.joined && takraw?.data ? (takraw.data.grade || '') : '';
+
+                    return {
+                        'โรงเรียน': reg.schoolName,
+                        'ผู้บริหาร': reg.director ? `${reg.director.prefix || ''} ${reg.director.firstName || ''} ${reg.director.lastName || ''}`.trim() : '',
+                        'นักเรียน ป.6': reg.totalStudents,
+                        'ความประสงค์': reg.intention === 'join' ? 'เข้าร่วม' : 'ไม่เข้าร่วม',
+                        'นักเรียนเข้าร่วม': reg.joinCount || 0,
+                        'เหตุผลไม่เข้าร่วม': reg.notJoinReason || '',
+                        'ครูผู้ดูแล': reg.teachers?.map(t => `${t.prefix || ''} ${t.firstName || ''} ${t.lastName || ''}`.trim()).join(', ') || '',
+                        'เบอร์โทร': reg.teachers?.map(t => t.phone).join(', ') || '',
+                        'ร้องเพลง': singing?.joined ? 'ใช่' : 'ไม่',
+                        'ชื่อผู้ประกวดร้องเพลง': singingName,
+                        'ระดับชั้น (ร้องเพลง)': singingGrade,
+                        'เดาะตะกร้อ': takraw?.joined ? 'ใช่' : 'ไม่',
+                        'ชื่อผู้แข่งเดาะตะกร้อ': takrawName,
+                        'ระดับชั้น (เดาะตะกร้อ)': takrawGrade
+                    };
+                });
                 
                 const ws = XLSX.utils.json_to_sheet(excelData);
                 const wb = XLSX.utils.book_new();
@@ -2017,7 +2157,6 @@
                 document.getElementById('showAnnouncement').checked = settings.showAnnouncement || false;
                 document.getElementById('enableRandomSystem').checked = settings.enableRandomSystem || false;
                 
-                // Show/hide random tab based on setting
                 const randomTab = document.getElementById('randomTab');
                 if (settings.enableRandomSystem) {
                     randomTab.style.display = 'block';
@@ -2042,9 +2181,7 @@
             Swal.fire({
                 title: 'กำลังอัปโหลด...',
                 allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
+                didOpen: () => { Swal.showLoading(); }
             });
             
             try {
@@ -2084,7 +2221,6 @@
                     enableRandomSystem: enableRandom
                 });
                 
-                // Show/hide random tab
                 const randomTab = document.getElementById('randomTab');
                 if (enableRandom) {
                     randomTab.style.display = 'block';
@@ -2108,7 +2244,6 @@
             }
         }
         
-        // Load Event Logo
         async function loadEventLogo() {
             try {
                 const snapshot = await database.ref('admin/eventLogo').once('value');
@@ -2132,7 +2267,6 @@
             }
         }
         
-        // Show Announcement
         async function showAnnouncement() {
             try {
                 const snapshot = await database.ref('admin').once('value');
@@ -2194,12 +2328,9 @@
                     showConfirmButton: false,
                     timer: 1500
                 });
-            }).catch(err => {
-                console.error('Error copying:', err);
-            });
+            }).catch(err => { console.error('Error copying:', err); });
         }
         
-        // Criteria Link
         async function openCriteriaLink(event) {
             event.preventDefault();
             try {
@@ -2228,11 +2359,10 @@
             loadAdminSettings();
         });
         
-        // Random System Variables
+        // Random System
         let currentContestants = [];
         let randomizedContestants = [];
         
-        // Load Contestants
         async function loadContestants() {
             const type = document.getElementById('randomContestType').value;
             const contestantsList = document.getElementById('contestantsList');
@@ -2311,14 +2441,12 @@
         function randomizeOrder() {
             if (currentContestants.length === 0) return;
             
-            // Fisher-Yates shuffle algorithm
             randomizedContestants = [...currentContestants];
             for (let i = randomizedContestants.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [randomizedContestants[i], randomizedContestants[j]] = [randomizedContestants[j], randomizedContestants[i]];
             }
             
-            // Show animation
             Swal.fire({
                 title: 'กำลังสุ่มลำดับ...',
                 html: '<div style="font-size: 60px; animation: spin 1s linear infinite;">🎲</div>',
@@ -2375,8 +2503,19 @@
                 const logoSnapshot = await database.ref('admin/eventLogo').once('value');
                 eventLogoUrl = logoSnapshot.val() || '';
             } catch (e) {}
+
+            let rowsHtml = randomizedContestants.map((c, i) => `
+                <tr>
+                    <td style="border:1px solid #000;padding:5px 6px;text-align:center;font-weight:bold;">${i + 1}</td>
+                    <td style="border:1px solid #000;padding:5px 6px;">${c.prefix}</td>
+                    <td style="border:1px solid #000;padding:5px 6px;">${c.firstName}</td>
+                    <td style="border:1px solid #000;padding:5px 6px;">${c.lastName}</td>
+                    <td style="border:1px solid #000;padding:5px 6px;text-align:center;">${c.grade}</td>
+                    <td style="border:1px solid #000;padding:5px 6px;">${c.school}</td>
+                </tr>
+            `).join('');
             
-            let html = `
+            const html = `
                 <div class="print-document">
                     <div class="print-header">
                         <img src="https://nonthaphathr.github.io/uploadimg/logoschool.png" alt="โรงเรียน">
@@ -2385,29 +2524,18 @@
                         <h2>ลำดับการแสดง${contestName}</h2>
                         <p>วันที่ ${new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                     </div>
-                    <table class="print-table">
+                    <table style="width:100%;border-collapse:collapse;border:2px solid #000;font-size:13px;margin:15px 0;">
                         <thead>
                             <tr>
-                                <th style="width: 50px;">ลำดับ</th>
-                                <th style="width: 100px;">คำนำหน้า</th>
-                                <th>ชื่อ</th>
-                                <th>สกุล</th>
-                                <th style="width: 80px;">ระดับชั้น</th>
-                                <th>โรงเรียน</th>
+                                <th style="border:1px solid #000;padding:5px 6px;text-align:center;width:50px;font-weight:bold;">ลำดับ</th>
+                                <th style="border:1px solid #000;padding:5px 6px;text-align:center;width:100px;font-weight:bold;">คำนำหน้า</th>
+                                <th style="border:1px solid #000;padding:5px 6px;text-align:center;font-weight:bold;">ชื่อ</th>
+                                <th style="border:1px solid #000;padding:5px 6px;text-align:center;font-weight:bold;">สกุล</th>
+                                <th style="border:1px solid #000;padding:5px 6px;text-align:center;width:80px;font-weight:bold;">ระดับชั้น</th>
+                                <th style="border:1px solid #000;padding:5px 6px;text-align:center;font-weight:bold;">โรงเรียน</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            ${randomizedContestants.map((c, i) => `
-                                <tr>
-                                    <td style="text-align: center; font-weight: bold;">${i + 1}</td>
-                                    <td>${c.prefix}</td>
-                                    <td>${c.firstName}</td>
-                                    <td>${c.lastName}</td>
-                                    <td style="text-align: center;">${c.grade}</td>
-                                    <td>${c.school}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
+                        <tbody>${rowsHtml}</tbody>
                     </table>
                     <div class="signature-section">
                         <div class="signature-box">
